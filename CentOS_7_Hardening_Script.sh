@@ -567,7 +567,7 @@ chmod 600 /etc/at.allow
 awk -F: '{print $1}' /etc/passwd | grep -v root > /etc/at.deny
 
 for pathings in /etc/cron.hourly /etc/cron.daily /etc/cron.weekly /etc/cron.monthly /etc/cron.d /etc/crontab; do
-    chmod 700 "$pathings"
+    chmod 600 "$pathings"
 done
 
 rm /etc/cron.deny 
@@ -679,7 +679,7 @@ cat > $UFWBEFORERULES <<EOF
 -A ufw-before-input -p tcp --dport 443  -j ufw-http
 
 # Limit connections per Class C
--A ufw-http -p tcp --syn -m connlimit --connlimit-above 20 --connlimit-mask 40 -j ufw-http-logdrop
+-A ufw-http -p tcp --syn -m connlimit --connlimit-above 40 --connlimit-mask 24 -j ufw-http-logdrop
 
 # Limit connections per IP
 -A ufw-http -m state --state NEW -m recent --name conn_per_ip --set
@@ -1653,7 +1653,7 @@ Protocol 2
 # aes128-cbc, aes192-cbc, aes256-cbc, 3des-cbc, blowfish-cbc, cast128-cbc.
 # OpenSSH 6.9: promoted chacha20-poly1305@openssh.com to be the default cipher.
 #
-Ciphers aes128-ctr,aes192-ctr,aes256-ctr,aes128-cbc,3des-cbc,aes192-cbc,aes256-cbc
+Ciphers aes256-ctr,aes192-ctr,aes128-ctr,aes256-gcm@openssh.com,aes128-gcm@openssh.com,chacha20-poly1305@openssh.com
 
 #
 # OpenSSH 6.2: added support for the UMAC-128 MAC as umac-128@openssh.com 
@@ -1665,7 +1665,7 @@ Ciphers aes128-ctr,aes192-ctr,aes256-ctr,aes128-cbc,3des-cbc,aes192-cbc,aes256-c
 # because of an encrypt-and-MAC mode. See the link below:
 # https://crypto.stackexchange.com/questions/202/should-we-mac-then-encrypt-or-encrypt-then-mac
 #
-MACs hmac-sha2-512,hmac-sha2-256
+MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
 
 #
 # OpenSSH 6.5: added support for ssh-ed25519. It offers better security 
